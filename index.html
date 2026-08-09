@@ -85,7 +85,12 @@
     background:var(--card);
     padding:16px 14px;
     text-align:left;
+    cursor:pointer;
+    border:2px solid transparent;
+    transition:background .12s;
   }
+  .stat:hover{background:var(--paper);}
+  .stat.active{border-color:var(--ink);background:var(--paper);}
   .stat .n{font-family:'Fraunces',serif;font-size:26px;font-weight:500;line-height:1;}
   .stat .l{font-size:12px;color:var(--muted);margin-top:6px;font-weight:600;letter-spacing:.02em;}
   .stat.urgent .n{color:var(--rust);}
@@ -334,6 +339,7 @@
 const STORAGE_KEY = 'policies';
 let policies = [];
 let activeFilter = 'All';
+let statusFilter = 'all';
 let searchTerm = '';
 let notifiedThisSession = new Set();
 
@@ -393,12 +399,21 @@ function renderStats(){
   const urgent = policies.filter(p => { const d = daysUntil(p.expiryDate); return d >= 0 && d <= 7; }).length;
   const soon = policies.filter(p => { const d = daysUntil(p.expiryDate); return d > 7 && d <= 30; }).length;
   const stats = document.getElementById('stats');
+  const isActive = (f) => statusFilter === f ? 'active' : '';
   stats.innerHTML = `
-    <div class="stat"><div class="n">${total}</div><div class="l">Total policies</div></div>
-    <div class="stat urgent"><div class="n">${urgent}</div><div class="l">Due within 7 days</div></div>
-    <div class="stat soon"><div class="n">${soon}</div><div class="l">Due within 30 days</div></div>
-    <div class="stat urgent"><div class="n">${expired}</div><div class="l">Already expired</div></div>
+    <div class="stat ${isActive('all')}" data-filter="all"><div class="n">${total}</div><div class="l">Total policies</div></div>
+    <div class="stat urgent ${isActive('urgent')}" data-filter="urgent"><div class="n">${urgent}</div><div class="l">Due within 7 days</div></div>
+    <div class="stat soon ${isActive('soon')}" data-filter="soon"><div class="n">${soon}</div><div class="l">Due within 30 days</div></div>
+    <div class="stat urgent ${isActive('expired')}" data-filter="expired"><div class="n">${expired}</div><div class="l">Already expired</div></div>
   `;
+  stats.querySelectorAll('.stat').forEach(el => {
+    el.addEventListener('click', () => {
+      const f = el.dataset.filter;
+      statusFilter = (statusFilter === f) ? 'all' : f;
+      renderStats();
+      renderList();
+    });
+  });
 }
 
 function renderTabs(){
@@ -419,6 +434,15 @@ function renderList(){
   const list = document.getElementById('list');
   let items = policies.slice();
 
+  if(statusFilter !== 'all'){
+    items = items.filter(p => {
+      const d = daysUntil(p.expiryDate);
+      if(statusFilter === 'urgent') return d >= 0 && d <= 7;
+      if(statusFilter === 'soon') return d > 7 && d <= 30;
+      if(statusFilter === 'expired') return d < 0;
+      return true;
+    });
+  }
   if(activeFilter !== 'All'){
     items = items.filter(p => p.insuranceType === activeFilter);
   }
@@ -434,10 +458,11 @@ function renderList(){
   items.sort((a,b) => daysUntil(a.expiryDate) - daysUntil(b.expiryDate));
 
   if(items.length === 0){
+    const filtered = statusFilter !== 'all' || activeFilter !== 'All' || searchTerm.trim();
     list.innerHTML = `
       <div class="empty">
         <h3>${policies.length===0 ? 'No policies yet' : 'Nothing matches'}</h3>
-        <p>${policies.length===0 ? 'Add the first policy to start tracking renewals.' : 'Try a different search or filter.'}</p>
+        <p>${policies.length===0 ? 'Add the first policy to start tracking renewals.' : (filtered ? 'Try clearing the filter above or your search.' : 'Try a different search or filter.')}</p>
       </div>`;
     return;
   }
