@@ -17,12 +17,41 @@
     --line:#E4DDCC;
     --teal:#3E7C74;
     --teal-bg:#E4EFEC;
+    --teal-text:#204A44;
     --amber:#B5791E;
     --amber-bg:#FBEDD8;
     --rust:#B14434;
     --rust-bg:#F8E4E0;
     --rust-deep:#7A2C21;
+    --header-bg:#1C3644;
+    --header-text:#F6F2E9;
+    --header-sub:#C7D2D5;
+    --header-eyebrow:#B9C7CC;
+    --shadow:rgba(28,54,68,0.08);
+    --overlay:rgba(28,54,68,0.45);
   }
+  [data-theme="dark"]{
+    --ink:#EDE7DA;
+    --ink-soft:#C7BFAE;
+    --muted:#9B927F;
+    --paper:#14191D;
+    --card:#1E262C;
+    --line:#333E45;
+    --teal:#6FBBAE;
+    --teal-bg:#1E3430;
+    --teal-text:#B7DFD6;
+    --amber:#E3A857;
+    --amber-bg:#3A2C14;
+    --rust:#E38070;
+    --rust-bg:#3A2019;
+    --header-bg:#0E1418;
+    --header-text:#F1ECDF;
+    --header-sub:#A9B7BC;
+    --header-eyebrow:#8AA0A6;
+    --shadow:rgba(0,0,0,0.4);
+    --overlay:rgba(0,0,0,0.6);
+  }
+  body{transition:background .15s,color .15s;}
   *{box-sizing:border-box;}
   body{
     margin:0;
@@ -34,15 +63,26 @@
   .wrap{max-width:900px;margin:0 auto;padding:0 20px 80px;}
 
   header.top{
-    background:var(--ink);
-    color:#F6F2E9;
+    background:var(--header-bg);
+    color:var(--header-text);
     padding:36px 20px 30px;
     margin-bottom:0;
   }
-  header.top .inner{max-width:900px;margin:0 auto;}
+  header.top .inner{max-width:900px;margin:0 auto;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+  header.top .text-block{min-width:0;flex:1;}
+  .theme-toggle{
+    flex:none;width:40px;height:40px;border-radius:50%;
+    border:1px solid rgba(255,255,255,0.22);
+    background:rgba(255,255,255,0.07);
+    color:var(--header-text);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+  .theme-toggle:hover{background:rgba(255,255,255,0.15);}
+  .theme-toggle svg{width:18px;height:18px;}
   .eyebrow{
     font-size:12px;letter-spacing:.14em;text-transform:uppercase;
-    color:#B9C7CC;font-weight:600;margin:0 0 6px;
+    color:var(--header-eyebrow);font-weight:600;margin:0 0 6px;
   }
   h1{
     font-family:'Fraunces',serif;
@@ -52,7 +92,7 @@
     letter-spacing:-0.01em;
   }
   .sub{
-    color:#C7D2D5;
+    color:var(--header-sub);
     font-size:15px;
     margin:0;
     max-width:520px;
@@ -70,7 +110,7 @@
     margin:-24px 0 28px;
     position:relative;
     z-index:2;
-    box-shadow:0 6px 18px rgba(28,54,68,0.08);
+    box-shadow:0 6px 18px var(--shadow);
   }
   .stat{
     background:var(--card);
@@ -119,8 +159,8 @@
 
   .notif-bar{
     display:flex;align-items:center;justify-content:space-between;gap:12px;
-    background:var(--teal-bg);border:1px solid #cfe3de;border-radius:10px;
-    padding:12px 16px;margin-bottom:18px;font-size:13.5px;color:#204a44;
+    background:var(--teal-bg);border:1px solid var(--line);border-radius:10px;
+    padding:12px 16px;margin-bottom:18px;font-size:13.5px;color:var(--teal-text);
   }
   .notif-bar button{
     border:none;background:var(--teal);color:#fff;padding:7px 14px;border-radius:6px;
@@ -169,7 +209,7 @@
   .actions{flex:none;display:flex;align-items:center;gap:8px;}
   .actions a.phone{
     font-size:12.5px;color:var(--teal);text-decoration:none;font-weight:600;
-    border:1px solid #cfe3de;padding:6px 10px;border-radius:6px;background:var(--teal-bg);
+    border:1px solid var(--line);padding:6px 10px;border-radius:6px;background:var(--teal-bg);
   }
   .notify-check{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);cursor:pointer;}
   .icon-btn{
@@ -185,7 +225,7 @@
   .empty h3{font-family:'Fraunces',serif;font-size:20px;color:var(--ink);margin-bottom:6px;font-weight:500;}
 
   .overlay{
-    position:fixed;inset:0;background:rgba(28,54,68,0.45);
+    position:fixed;inset:0;background:var(--overlay);
     display:none;align-items:center;justify-content:center;padding:20px;z-index:50;
   }
   .overlay.show{display:flex;}
@@ -204,7 +244,7 @@
   .type-select-row select{flex:1;}
   .type-icon-preview{
     flex:none;width:38px;height:38px;border-radius:8px;background:var(--teal-bg);
-    border:1px solid #cfe3de;display:flex;align-items:center;justify-content:center;color:var(--teal);
+    border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--teal);
   }
   .type-icon-preview svg{width:19px;height:19px;}
   .field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--teal);outline-offset:1px;}
@@ -236,9 +276,12 @@
 
 <header class="top">
   <div class="inner">
-    <p class="eyebrow">Policy Register</p>
-    <h1>Every renewal, tracked</h1>
-    <p class="sub">Every customer's policy in one place — with a clear warning before anything lapses.</p>
+    <div class="text-block">
+      <p class="eyebrow">Policy Register</p>
+      <h1>Every renewal, tracked</h1>
+      <p class="sub">Every customer's policy in one place — with a clear warning before anything lapses.</p>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"></button>
   </div>
 </header>
 
@@ -345,6 +388,49 @@ const TYPE_ICONS = {
 };
 function typeIcon(type){
   return TYPE_ICONS[type] || TYPE_ICONS.Other;
+}
+
+const MOON_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+
+function applyTheme(theme){
+  if(theme === 'dark'){
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  const btn = document.getElementById('themeToggle');
+  btn.innerHTML = theme === 'dark' ? SUN_ICON : MOON_ICON;
+  btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+}
+
+async function loadTheme(){
+  try{
+    const res = await window.storage.get('theme', false);
+    return res && res.value ? res.value : null;
+  }catch(e){
+    return null;
+  }
+}
+
+async function saveTheme(theme){
+  try{
+    await window.storage.set('theme', theme, false);
+  }catch(e){}
+}
+
+async function initTheme(){
+  let theme = await loadTheme();
+  if(!theme){
+    theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  }
+  applyTheme(theme);
+  document.getElementById('themeToggle').addEventListener('click', async () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    await saveTheme(next);
+  });
 }
 
 function daysUntil(dateStr){
@@ -667,6 +753,7 @@ function setupNotifBar(){
 }
 
 async function init(){
+  await initTheme();
   await loadPolicies();
   renderStats();
   renderTabs();
